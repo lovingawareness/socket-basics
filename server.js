@@ -8,6 +8,7 @@ const http = require('http')
 const path = require('path')
 const socketIO = require('socket.io')
 const PORT = 5000
+var MESSAGECOUNT = 10
 
 const app = express()
 server = http.Server(app)
@@ -28,6 +29,13 @@ io.on('connection', (socket) => {
   // nothing
 })
 
-setInterval(() => {
-  io.sockets.emit('message', 'hi!')
+var repeatMessage = setInterval(() => {
+  console.log(`setInterval has been called again ${MESSAGECOUNT}.`)
+  if(MESSAGECOUNT > 0) {
+    io.sockets.emit('message', `${MESSAGECOUNT} Hi!`)
+    MESSAGECOUNT--
+  } else {
+    clearInterval(repeatMessage)
+    console.log('Stopping setInterval.')
+  }
 }, 1000)
