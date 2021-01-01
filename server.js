@@ -26,6 +26,9 @@ server.listen(PORT, () => {
 
 io.on('connection', (socket) => {
   // nothing
+  socket.on('message', (data) => {
+    console.log(`Message received from client: ${data}`)
+  })
 })
 
 setInterval(() => {
