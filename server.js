@@ -26,6 +26,25 @@ server.listen(PORT, () => {
 
 io.on('connection', (socket) => {
   // nothing
+  var message = 'Knock, knock!'
+  console.log(`Server: ${message}`)
+  socket.emit('knockknock', message)
+  socket.on('whosthere', (data) => {
+    console.log(`Client: ${data}`)
+    var response = 'Sadie'
+    console.log(`Server: ${response}`)
+    socket.emit('whosthere', response)
+  })
+  socket.on('who', (data) => {
+    console.log(`Client: ${data}`)
+    var response = 'Sadie magic word and I\'ll come in!'
+    console.log(`Server: ${response}`)
+    socket.emit('answer', response)
+  })
+
+  socket.on('laughter', (data) => {
+    console.log(`Client: ${data}`)
+  })
 })
 
 setInterval(() => {
