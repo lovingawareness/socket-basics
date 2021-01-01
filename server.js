@@ -24,10 +24,32 @@ server.listen(PORT, () => {
   console.log(`Starting server on port ${PORT}`)
 })
 
+var players = {}
 io.on('connection', (socket) => {
-  // nothing
+  socket.on('new player', () => {
+    console.log(`New player joined: ${socket.id}`)
+    players[socket.id] = {
+      x: 300,
+      y: 300
+    }
+  })
+  socket.on('movement', (movement) => {
+    var player = players[socket.id] || {}
+    if(movement.left) {
+      player.x -= 5
+    }
+    if(movement.right) {
+      player.x += 5
+    }
+    if(movement.up) {
+      player.y -= 5
+    }
+    if(movement.down) {
+      player.y += 5
+    }
+  })
 })
 
 setInterval(() => {
-  io.sockets.emit('message', 'hi!')
-}, 1000)
+  io.sockets.emit('state', players)
+}, 1000 / 60)
