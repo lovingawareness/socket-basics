@@ -24,32 +24,32 @@ server.listen(PORT, () => {
   console.log(`Starting server on port ${PORT}`)
 })
 
+var timeLeft = null
+var timer
+
+function startTimer() {
+  console.log('startTimer')
+  timer = setInterval(() => {
+    if(timeLeft >= 0) {
+      io.sockets.emit('timerUpdate', timeLeft.toString())
+      console.log(`timeLeft: ${timeLeft}`)
+      timeLeft--  
+    } else {
+      clearInterval(timer)
+    }
+  }, 1000)
+}
+
 var players = {}
 io.on('connection', (socket) => {
   socket.on('new player', () => {
     console.log(`New player joined: ${socket.id}`)
     players[socket.id] = {
-      x: 300,
-      y: 300
+      timerLength: 60
     }
-  })
-  socket.on('movement', (movement) => {
-    var player = players[socket.id] || {}
-    if(movement.left) {
-      player.x -= 5
-    }
-    if(movement.right) {
-      player.x += 5
-    }
-    if(movement.up) {
-      player.y -= 5
-    }
-    if(movement.down) {
-      player.y += 5
-    }
+    timeLeft = players[socket.id].timerLength
+    startTimer()
   })
 })
 
-setInterval(() => {
-  io.sockets.emit('state', players)
-}, 1000 / 60)
+
